@@ -1,0 +1,105 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.6
+    container_name: keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=12345admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://keycloak-postgres:5432/keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=keycloakpassword
+      - KC_IMPORT=/opt/keycloak/data/import/uwatcher-realm.json
+      - KC_HEALTH_ENABLED=true
+      - KC_HOSTNAME=http://localhost/auth/
+      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_BACKCHANNEL=false
+      - KC_PROXY=edge
+      - KC_HTTP_RELATIVE_PATH=/auth
+    depends_on:
+      - keycloak-postgres
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+      - ./keycloak/realms:/opt/keycloak/data/import
+    command: start-dev --import-realm --hostname-strict=false --http-relative-path=/auth
+    networks:
+      - uwatcher-network
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /auth/health/ready HTTP/1.1\r\nHost: localhost:9000\r\nConnection: close\r\n\r\n' >&3;cat <&3 | grep -q '\"status\": \"UP\"'"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  keycloak-postgres:
+    image: postgres:15
+    container_name: keycloak-postgres
+    environment:
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=keycloakpassword
+      - POSTGRES_DB=keycloak
+    volumes:
+      - keycloak-postgres-data:/var/lib/postgresql/data
+    networks:
+      - uwatcher-network
+
+  web-ui:
+    container_name: web-ui
+    build:
+      context: ./web-ui
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    networks:
+      - uwatcher-network
+
+  nginx:
+    image: nginx
+    container_name: uwatcher-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - uwatcher-network
+    depends_on:
+      - web-ui
+      - oauth2-proxy
+
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.1
+    container_name: oauth2-proxy
+    environment:
+      - OAUTH2_PROXY_PROVIDER=oidc
+      - OAUTH2_PROXY_CLIENT_ID=oauth2-proxy
+      - OAUTH2_PROXY_CLIENT_SECRET=oP50OnQsgA82NOemthEHNKxgs4oL1OkQ
+      - OAUTH2_PROXY_OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/uwatcher
+      - OAUTH2_PROXY_COOKIE_SECRET=6nWci6Vb8K6WyiL9HQUfryY0wpIDcogjtOsswvM8K3E=
+      - OAUTH2_PROXY_COOKIE_SECURE=false
+      - OAUTH2_PROXY_EMAIL_DOMAINS=*
+      - OAUTH2_PROXY_WHITELIST_DOMAIN=.localhost
+      - OAUTH2_PROXY_REDIRECT_URL=http://localhost/oauth2/callback
+      - OAUTH2_PROXY_UPSTREAMS=http://web-ui:4200/
+      - OAUTH2_PROXY_LISTEN_ADDRESS=0.0.0.0:4180
+      - OAUTH2_PROXY_INSECURE_OIDC_SKIP_ISSUER_VERIFICATION=true
+    ports:
+      - "4180:4180"
+    networks:
+      - uwatcher-network
+    depends_on:
+      keycloak:
+        condition: service_healthy
+        restart: true
+    command:
+      - --http-address=0.0.0.0:4180
+
+volumes:
+  keycloak-data:
+    driver: local
+  keycloak-postgres-data:
+    driver: local
+
+networks:
+  uwatcher-network:
+    driver: bridge

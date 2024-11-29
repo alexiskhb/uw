@@ -1,0 +1,61 @@
+{
+    "id": "uwatcher",
+    "realm": "uwatcher",
+    "enabled": true,
+    "registrationAllowed": true,
+    "registrationEmailAsUsername": true,
+    "rememberMe": true,
+    "verifyEmail": false,
+    "resetPasswordAllowed": false,
+    "editUsernameAllowed": false,
+    "defaultRoles": [
+        "user"
+    ],
+    "smtpServer": {
+        "host": "smtp.example.com",
+        "port": "587",
+        "from": "noreply@example.com",
+        "user": "smtp-user",
+        "password": "smtp-password",
+        "auth": "true",
+        "starttls": "true"
+    },
+    "clients": [
+        {
+            "clientId": "web-ui",
+            "enabled": true,
+            "publicClient": true,
+            "redirectUris": [
+                "http://localhost/*"
+            ],
+            "webOrigins": [
+                "http://localhost"
+            ]
+        },
+        {
+            "clientId": "oauth2-proxy",
+            "enabled": true,
+            "publicClient": false,
+            "secret": "oP50OnQsgA82NOemthEHNKxgs4oL1OkQ",
+            "redirectUris": [
+                "http://localhost/*"
+            ],
+            "webOrigins": [
+                "http://localhost"
+            ]
+        }
+    ],
+    "components": {
+        "org.keycloak.userprofile.UserProfileProvider": [
+            {
+                "providerId": "declarative-user-profile",
+                "subComponents": {},
+                "config": {
+                    "kc.user.profile.config": [
+                        "{\"attributes\":[{\"name\":\"username\",\"displayName\":\"${username}\",\"validations\":{\"length\":{\"min\":3,\"max\":255},\"username-prohibited-characters\":{},\"up-username-not-idn-homograph\":{}},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"email\",\"displayName\":\"${email}\",\"validations\":{\"email\":{},\"length\":{\"max\":255}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"firstName\",\"displayName\":\"${firstName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"annotations\":{},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"lastName\",\"displayName\":\"${lastName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"annotations\":{},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false}],\"groups\":[{\"name\":\"user-metadata\",\"displayHeader\":\"User metadata\",\"displayDescription\":\"Attributes, which refer to user metadata\"}]}"
+                    ]
+                }
+            }
+        ]
+    }
+}
