@@ -74,7 +74,6 @@ services:
       - OAUTH2_PROXY_PROVIDER=oidc
       - OAUTH2_PROXY_CLIENT_ID=oauth2-proxy
       - OAUTH2_PROXY_CLIENT_SECRET=oP50OnQsgA82NOemthEHNKxgs4oL1OkQ
-      - OAUTH2_PROXY_OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/uwatcher
       - OAUTH2_PROXY_COOKIE_SECRET=6nWci6Vb8K6WyiL9HQUfryY0wpIDcogjtOsswvM8K3E=
       - OAUTH2_PROXY_COOKIE_SECURE=false
       - OAUTH2_PROXY_EMAIL_DOMAINS=*
@@ -83,6 +82,13 @@ services:
       - OAUTH2_PROXY_UPSTREAMS=http://web-ui:4200/
       - OAUTH2_PROXY_LISTEN_ADDRESS=0.0.0.0:4180
       - OAUTH2_PROXY_INSECURE_OIDC_SKIP_ISSUER_VERIFICATION=true
+      - OAUTH2_PROXY_INSECURE_OIDC_ALLOW_UNVERIFIED_EMAIL=true
+      - OAUTH2_PROXY_SKIP_OIDC_DISCOVERY=true
+      - OAUTH2_PROXY_OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/uwatcher
+      - OAUTH2_PROXY_LOGIN_URL=http://localhost/auth/realms/uwatcher/protocol/openid-connect/auth
+      - OAUTH2_PROXY_REDEEM_URL=http://keycloak:8080/auth/realms/uwatcher/protocol/openid-connect/token
+      - OAUTH2_PROXY_PROFILE_URL=http://keycloak:8080/auth/realms/uwatcher/protocol/openid-connect/userinfo
+      - OAUTH2_PROXY_OIDC_JWKS_URL=http://keycloak:8080/auth/realms/uwatcher/protocol/openid-connect/certs
     ports:
       - "4180:4180"
     networks:
