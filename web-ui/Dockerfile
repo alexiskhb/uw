@@ -5,8 +5,4 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 RUN npm install
 
-COPY . .
-
-EXPOSE 4200
-
-CMD ["npx", "nx", "serve", "web-ui"]
+CMD ["npx", "nx", "serve", "web-ui", "--host", "0.0.0.0"]
