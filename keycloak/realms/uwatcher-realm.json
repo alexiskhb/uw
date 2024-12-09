@@ -26,10 +26,10 @@
             "enabled": true,
             "publicClient": true,
             "redirectUris": [
-                "http://localhost/*"
+                "http://uw.local/*"
             ],
             "webOrigins": [
-                "http://localhost"
+                "http://uw.local"
             ]
         },
         {
@@ -38,10 +38,10 @@
             "publicClient": false,
             "secret": "oP50OnQsgA82NOemthEHNKxgs4oL1OkQ",
             "redirectUris": [
-                "http://localhost/*"
+                "http://uw.local/*"
             ],
             "webOrigins": [
-                "http://localhost"
+                "http://uw.local"
             ]
         }
     ],

@@ -7,12 +7,16 @@ module.exports = {
     path: join(__dirname, '../../dist/apps/web-ui'),
   },
   devServer: {
+    host: '0.0.0.0',
     port: 4200,
     historyApiFallback: {
       index: '/index.html',
       disableDotRule: true,
       htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
     },
+    allowedHosts: [
+      '.uw.local',
+    ],
   },
   watchOptions: {
     poll: true,

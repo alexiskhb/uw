@@ -13,7 +13,7 @@ services:
       - KC_DB_PASSWORD=keycloakpassword
       - KC_IMPORT=/opt/keycloak/data/import/uwatcher-realm.json
       - KC_HEALTH_ENABLED=true
-      - KC_HOSTNAME=http://localhost/auth/
+      - KC_HOSTNAME=http://uw.local/auth/
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_BACKCHANNEL=false
       - KC_PROXY=edge
@@ -82,15 +82,15 @@ services:
       - OAUTH2_PROXY_COOKIE_SECRET=6nWci6Vb8K6WyiL9HQUfryY0wpIDcogjtOsswvM8K3E=
       - OAUTH2_PROXY_COOKIE_SECURE=false
       - OAUTH2_PROXY_EMAIL_DOMAINS=*
-      - OAUTH2_PROXY_WHITELIST_DOMAIN=.localhost
-      - OAUTH2_PROXY_REDIRECT_URL=http://localhost/oauth2/callback
+      - OAUTH2_PROXY_WHITELIST_DOMAIN=.uw.local
+      - OAUTH2_PROXY_REDIRECT_URL=http://uw.local/oauth2/callback
       - OAUTH2_PROXY_UPSTREAMS=http://web-ui:4200/
       - OAUTH2_PROXY_LISTEN_ADDRESS=0.0.0.0:4180
       - OAUTH2_PROXY_INSECURE_OIDC_SKIP_ISSUER_VERIFICATION=true
       - OAUTH2_PROXY_INSECURE_OIDC_ALLOW_UNVERIFIED_EMAIL=true
       - OAUTH2_PROXY_SKIP_OIDC_DISCOVERY=true
       - OAUTH2_PROXY_OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/uwatcher
-      - OAUTH2_PROXY_LOGIN_URL=http://localhost/auth/realms/uwatcher/protocol/openid-connect/auth
+      - OAUTH2_PROXY_LOGIN_URL=http://uw.local/auth/realms/uwatcher/protocol/openid-connect/auth
       - OAUTH2_PROXY_REDEEM_URL=http://keycloak:8080/auth/realms/uwatcher/protocol/openid-connect/token
       - OAUTH2_PROXY_PROFILE_URL=http://keycloak:8080/auth/realms/uwatcher/protocol/openid-connect/userinfo
       - OAUTH2_PROXY_OIDC_JWKS_URL=http://keycloak:8080/auth/realms/uwatcher/protocol/openid-connect/certs
@@ -105,10 +105,26 @@ services:
     command:
       - --http-address=0.0.0.0:4180
 
+  minio:
+    image: bitnami/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=12345admin
+    volumes:
+      - minio-data:/bitnami/minio/data
+    networks:
+      - uwatcher-network
+
 volumes:
   keycloak-data:
     driver: local
   keycloak-postgres-data:
+    driver: local
+  minio-data:
     driver: local
 
 networks:
