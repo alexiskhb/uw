@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: uw-namespace
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - uw.local
+      secretName: nginx-certs
+  rules:
+    - host: uw.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  number: 80

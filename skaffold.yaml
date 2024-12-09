@@ -1,0 +1,36 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: uwatcher
+build:
+  artifacts:
+    - image: web-ui
+      context: ./web-ui
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: 'src'
+          - src: 'src/**/*.html'
+            dest: 'src'
+          - src: 'src/**/*.css'
+            dest: 'src'
+  local:
+    push: false
+deploy:
+  kubectl:
+    defaultNamespace: uw-namespace
+manifests:
+  rawYaml:
+    - kubernetes/**/pvc.yaml
+    - kubernetes/**/configmap.yaml
+    - kubernetes/**/secret.yaml
+    - kubernetes/minio/deployment.yaml
+    - kubernetes/keycloak-postgres/deployment.yaml
+    - kubernetes/keycloak/deployment.yaml
+    - kubernetes/nginx/deployment.yaml
+    - kubernetes/oauth2-proxy/deployment.yaml
+    - kubernetes/web-ui/deployment.yaml
+    - kubernetes/**/service.yaml
+    - kubernetes/ingress.yaml
