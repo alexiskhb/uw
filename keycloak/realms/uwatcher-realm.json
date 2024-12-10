@@ -26,10 +26,14 @@
             "enabled": true,
             "publicClient": true,
             "redirectUris": [
-                "http://uw.local/*"
+                "http://uw.local/*",
+                "https://uw.local/*"
             ],
             "webOrigins": [
-                "http://uw.local"
+                "http://uw.local",
+                "https://uw.local",
+                "http://uw.local/auth",
+                "https://uw.local/auth"
             ]
         },
         {
@@ -38,10 +42,14 @@
             "publicClient": false,
             "secret": "oP50OnQsgA82NOemthEHNKxgs4oL1OkQ",
             "redirectUris": [
-                "http://uw.local/*"
+                "http://uw.local/*",
+                "https://uw.local/*"
             ],
             "webOrigins": [
-                "http://uw.local"
+                "http://uw.local",
+                "https://uw.local",
+                "http://uw.local/auth",
+                "https://uw.local/auth"
             ]
         }
     ],

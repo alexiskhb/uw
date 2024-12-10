@@ -76,4 +76,4 @@ spec:
             claimName: keycloak-data-pvc
         - name: realm-import
           configMap:
-            name: keycloak-realm-import
+            name: keycloak-config

@@ -24,7 +24,6 @@ deploy:
 manifests:
   rawYaml:
     - kubernetes/**/pvc.yaml
-    - kubernetes/**/configmap.yaml
     - kubernetes/**/secret.yaml
     - kubernetes/minio/deployment.yaml
     - kubernetes/keycloak-postgres/deployment.yaml
